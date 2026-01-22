@@ -35,7 +35,7 @@ The main objective is to evaluate **query expressiveness**, **readability**, and
   
 <img width="850" height="644" alt="sql_erd" src="https://github.com/user-attachments/assets/5e94e965-bc31-46fd-827f-a01ce7007032" />
 
-  The script used for creating the nodes, the relationships and the initial data can be found in the Scripts folder: [create.sql](Scripts/create.sql)
+  The script used for creating the nodes, the relationships and the initial data can be found in the Scripts folder: [createNeo4j.txt](Scripts/[createNeo4j.txt)
 
   ---
 
@@ -58,7 +58,7 @@ The main objective is to evaluate **query expressiveness**, **readability**, and
 
 The relational schema mirrors the graph structure using foreign keys and join tables.
 
-The script used for creating the table is create.sql
+The script used for creating the table is [create.sql](Scripts/[createNeo4j.sql)
 
 ---
 ## Implemented Queries
