@@ -76,3 +76,130 @@ The following queries were implemented in both databases:
   The SQL queries can be found in [queries.sql](Scripts/queries.sql).  
   The Neo4j queries can be found in [queriesNeo4.txt](Scripts/queriesNeo4j.txt).
 
+  # Example of an sql query compared to the equivalent Neo4j query:
+  
+  Shortest Path between users
+
+SQL:
+  ```sql
+WITH RECURSIVE bfs AS (
+  -- nivel 0: start (nodul 1)
+  SELECT
+    2 AS start_id,
+    2 AS node_id,
+    CAST('2' AS CHAR(1000)) AS path,
+    0 AS hops
+  UNION ALL
+
+  -- extindere BFS
+  SELECT
+    bfs.start_id,
+    f.userId2 AS node_id,
+    CONCAT(bfs.path, ',', f.userId2) AS path,
+    bfs.hops + 1 AS hops
+  FROM bfs
+  JOIN Friends f
+    ON f.userId1 = bfs.node_id
+  WHERE bfs.hops < 5
+    AND FIND_IN_SET(f.userId2, bfs.path) = 0   
+)
+SELECT node_id AS target_id, hops, path
+FROM bfs
+WHERE node_id = 4
+ORDER BY hops
+LIMIT 1;
+
+```
+
+
+CYPHER:
+```cypher
+MATCH (a:User {userId: 1}), (b:User {userId: 5})
+MATCH p = shortestPath((a)-[:FRIEND*..10]->(b))
+RETURN p, length(p) AS hops;
+
+```
+The SQL solution requires complex recursive logic to compute the shortest path, while Neo4j provides a clear and concise query using native graph traversal.
+
+## Performance Comparison
+
+To evaluate the performance of relational and graph databases, a benchmark was conducted using a Python-based testing framework.  
+Each query was executed 30 times, and the following metrics were collected:
+
+- median execution time (ms)
+- mean execution time (ms)
+- number of returned records
+- execution cost per returned node
+
+Two datasets were used:
+- **Small dataset** – used for functional validation
+- **Large dataset** – used to analyze scalability and traversal cost
+
+---
+
+## Dataset Generation
+
+The datasets used in this benchmark were generated using a Python script.  
+The generator creates users, movies, genres, people (actors and directors), and their relationships using randomized but controlled distributions in order to simulate realistic social and movie-recommendation scenarios.
+
+The same generated data is inserted into both MySQL and Neo4j, ensuring a fair and consistent comparison between the two database systems.
+
+The data generation and insertion logic can be found in the following script:
+
+[insert_generate.py](Scripts/insert_generate.py)
+
+### Small Dataset Results
+
+| Query | Database | Median Time (ms) | Mean Time (ms) | Returned Records |
+|------|----------|------------------|----------------|------------------|
+| Q1 – Friends of Friends | MySQL | 0.30 | 0.31 | 20 |
+| Q1 – Friends of Friends | Neo4j | 1.22 | 1.26 | 20 |
+| Q2 – Shortest Path | MySQL | 0.34 | 0.36 | 1 |
+| Q2 – Shortest Path | Neo4j | 1.93 | 1.91 | 1 |
+| Q3 – FOF Recommendations | MySQL | 0.36 | 0.37 | 10 |
+| Q3 – FOF Recommendations | Neo4j | 1.59 | 1.64 | 10 |
+| Q4 – Genre Similarity | MySQL | 0.54 | 0.54 | 10 |
+| Q4 – Genre Similarity | Neo4j | 1.76 | 1.92 | 10 |
+| Q5 – Movie Similarity | MySQL | 0.37 | 0.39 | 10 |
+| Q5 – Movie Similarity | Neo4j | 1.29 | 1.27 | 10 |
+| Q6 – Collaborative Recommendations | MySQL | 0.53 | 0.56 | 10 |
+| Q6 – Collaborative Recommendations | Neo4j | 1.78 | 1.87 | 10 |
+| Q7 – Co-actors | MySQL | 0.40 | 0.40 | 20 |
+| Q7 – Co-actors | Neo4j | 1.71 | 1.78 | 20 |
+
+---
+
+### Large Dataset Results
+
+| Query | Database | Median Time (ms) | Mean Time (ms) | Returned Records |
+|------|----------|------------------|----------------|------------------|
+| Q1 – Friends of Friends | MySQL | 0.54 | 0.56 | 20 |
+| Q1 – Friends of Friends | Neo4j | 2.46 | 2.56 | 20 |
+| Q2 – Shortest Path | MySQL | 255.22 | 258.15 | 1 |
+| Q2 – Shortest Path | Neo4j | 2.81 | 2.80 | 1 |
+| Q3 – FOF Recommendations | MySQL | 2.01 | 2.03 | 10 |
+| Q3 – FOF Recommendations | Neo4j | 4.37 | 4.37 | 10 |
+| Q4 – Genre Similarity | MySQL | 662.14 | 663.42 | 10 |
+| Q4 – Genre Similarity | Neo4j | 340.12 | 343.03 | 10 |
+| Q5 – Movie Similarity | MySQL | 1.15 | 1.12 | 10 |
+| Q5 – Movie Similarity | Neo4j | 3.77 | 4.02 | 10 |
+| Q6 – Collaborative Recommendations | MySQL | 6.72 | 7.56 | 10 |
+| Q6 – Collaborative Recommendations | Neo4j | 11.82 | 12.80 | 10 |
+| Q7 – Co-actors | MySQL | 167.41 | 166.99 | 20 |
+| Q7 – Co-actors | Neo4j | 91.02 | 88.45 | 20 |
+
+---
+
+### Interpretation
+
+The benchmark results highlight clear performance differences depending on query type.
+
+- MySQL performs better for simple join-based queries and shallow relationships.
+- Neo4j significantly outperforms MySQL for graph traversal operations, especially shortest path queries.
+- As dataset size increases, recursive SQL queries become considerably more expensive.
+- Graph databases scale better with relationship depth and connectivity.
+- Query structure and relationship traversal have a stronger impact on performance than raw data volume.
+
+These results confirm that graph databases are better suited for highly connected data, while relational databases remain efficient for structured and local queries.
+
+https://youtu.be/YUyrAiChB9A
