@@ -59,3 +59,20 @@ The main objective is to evaluate **query expressiveness**, **readability**, and
 The relational schema mirrors the graph structure using foreign keys and join tables.
 
 The script used for creating the table is create.sql
+
+---
+## Implemented Queries
+
+The following queries were implemented in both databases:
+
+1. Friends-of-Friends (FOF)
+2. Shortest Path between users
+3. Friends-of-Friends movie recommendations
+4. Genre-based user similarity
+5. Movie-based user similarity
+6. Collaborative filtering recommendations
+7. Co-actors detection
+
+  The SQL queries can be found in [queries.sql](scripts/mysql_queries.sql).  
+  The Neo4j queries can be found in [queriesNeo4.txt](scrtips/queriesNeo4.txt).
+
