@@ -9,8 +9,27 @@ This project presents a comparative analysis between **graph databases** and **r
 
 The study is conducted using:
 - **Neo4j** (graph database)
-- **MySQL 8.0** (relational database)
+- **MySQL 8.0.44** (relational database)
 - **Python** for data generation, integration, and benchmarking
+
+ ## Python Libraries Used
+
+The following Python libraries were used throughout the project:
+
+- **neo4j** — used to connect to the Neo4j database and execute Cypher queries via the Bolt protocol  
+- **mysql-connector-python** — used to connect to MySQL and execute SQL queries programmatically  
+- **random** — used for synthetic data generation  
+- **dataclasses** — used for structured storage of benchmark results  
+- **time** — used for measuring query execution time  
+- **statistics** — used for computing performance metrics (median, mean, percentiles)  
+- **csv** — used to export benchmark results to CSV files
+
+## AI tools usage
+ChatGPT has been used for the following tasks:
+- generating the code for the sql tables, after being given their description
+- generating the initial data for both databases
+- generating parts of the python code (especially for the randomly generated data for inserting in the database)
+- generating a chart for data in the .csv files
 
 The main objective is to evaluate **query expressiveness**, **readability**, and **performance**, especially for graph-oriented operations such as traversal and shortest path queries.
 
