@@ -207,6 +207,19 @@ The data generation and insertion logic can be found in the following script:
 | Q7 – Co-actors | MySQL | 167.41 | 166.99 | 20 |
 | Q7 – Co-actors | Neo4j | 91.02 | 88.45 | 20 |
 
+### Large Dataset Characteristics
+
+The large dataset used for performance evaluation contains the following approximate sizes:
+
+- 20,000 users  
+- 5,000 movies  
+- 20 genres  
+- 8,000 people (actors and directors)  
+- ~200,000 friendship relationships  
+- ~200,000 movie ratings  
+- ~20,000 ACTED_IN relationships  
+- 5,000 DIRECTED relationships  
+
 ---
 
 ### Interpretation
