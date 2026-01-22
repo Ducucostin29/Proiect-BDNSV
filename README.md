@@ -139,7 +139,7 @@ Two datasets were used:
 
 ## Dataset Generation
 
-The datasets used in this benchmark were generated using a Python script.  
+The datasets used in this benchmark were generated using a Python script : [benchmark.py](Python/benchmark.py).  
 The generator creates users, movies, genres, people (actors and directors), and their relationships using randomized but controlled distributions in order to simulate realistic social and movie-recommendation scenarios.
 
 The same generated data is inserted into both MySQL and Neo4j, ensuring a fair and consistent comparison between the two database systems.
@@ -202,4 +202,16 @@ The benchmark results highlight clear performance differences depending on query
 
 These results confirm that graph databases are better suited for highly connected data, while relational databases remain efficient for structured and local queries.
 
+### Graph Query Interface
+
+A command-line interface was implemented in Python to allow interactive execution of Neo4j queries.  
+The interface enables users to select predefined graph queries from a menu, provide input node identifiers at runtime, and visualize the query results directly in the terminal.
+
+This component demonstrates the integration of Neo4j with an external programming API and allows dynamic exploration of the graph database without using the Neo4j Browser.
+
+The implementation of the interface can be found here:
+
+[neo4j_cli.py](Python/neo4j_cli.py)
+
+A video demonstration of the Neo4j database, of the Mysql database, and of the Python interface can be found here:
 https://youtu.be/YUyrAiChB9A
