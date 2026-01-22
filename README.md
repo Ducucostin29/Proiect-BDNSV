@@ -146,7 +146,7 @@ The same generated data is inserted into both MySQL and Neo4j, ensuring a fair a
 
 The data generation and insertion logic can be found in the following script:
 
-[insert_generate.py](Scripts/insert_generate.py)
+[insert_generate.py](Python/insert_generate.py)
 
 ### Small Dataset Results
 
