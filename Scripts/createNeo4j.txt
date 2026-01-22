@@ -1,0 +1,94 @@
+CREATE CONSTRAINT user_id IF NOT EXISTS
+FOR (u:User) REQUIRE u.userId IS UNIQUE;
+
+CREATE CONSTRAINT movie_id IF NOT EXISTS
+FOR (m:Movie) REQUIRE m.movieId IS UNIQUE;
+
+CREATE CONSTRAINT genre_name IF NOT EXISTS
+FOR (g:Genre) REQUIRE g.name IS UNIQUE;
+
+CREATE CONSTRAINT person_id IF NOT EXISTS
+FOR (p:Person) REQUIRE p.personId IS UNIQUE;
+
+
+CREATE (:User {userId: 1, name: "Ana", age: 23, city: "Bucharest"});
+CREATE (:User {userId: 2, name: "Mihai", age: 25, city: "Cluj"});
+CREATE (:User {userId: 3, name: "Ioana", age: 22, city: "Iasi"});
+CREATE (:User {userId: 4, name: "Andrei", age: 30, city: "Brasov"});
+CREATE (:User {userId: 5, name: "Elena", age: 27, city: "Bucharest"});
+
+CREATE (:Movie {movieId: 1, title: "Inception", year: 2010});
+CREATE (:Movie {movieId: 2, title: "Interstellar", year: 2014});
+CREATE (:Movie {movieId: 3, title: "The Matrix", year: 1999});
+CREATE (:Movie {movieId: 4, title: "Avatar", year: 2009});
+
+CREATE (:Genre {name: "Sci-Fi"});
+CREATE (:Genre {name: "Action"});
+CREATE (:Genre {name: "Drama"});
+
+CREATE (:Person {personId: 1, name: "Leonardo DiCaprio"});
+CREATE (:Person {personId: 2, name: "Matthew McConaughey"});
+CREATE (:Person {personId: 3, name: "Keanu Reeves"});
+
+
+MATCH (m:Movie {title:"Inception"}), (g:Genre {name:"Sci-Fi"})
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie {title:"Interstellar"}), (g:Genre {name:"Sci-Fi"})
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie {title:"The Matrix"}), (g:Genre {name:"Action"})
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (m:Movie {title:"Avatar"}), (g:Genre {name:"Sci-Fi"})
+CREATE (m)-[:IN_GENRE]->(g);
+
+MATCH (a:User {userId:1}), (b:User {userId:2})
+CREATE (a)-[:FRIEND]->(b), (b)-[:FRIEND]->(a);
+
+MATCH (a:User {userId:2}), (b:User {userId:3})
+CREATE (a)-[:FRIEND]->(b), (b)-[:FRIEND]->(a);
+
+MATCH (a:User {userId:3}), (b:User {userId:4})
+CREATE (a)-[:FRIEND]->(b), (b)-[:FRIEND]->(a);
+
+MATCH (a:User {userId:4}), (b:User {userId:5})
+CREATE (a)-[:FRIEND]->(b), (b)-[:FRIEND]->(a);
+
+MATCH (u:User {userId:1}), (m:Movie {movieId:1})
+CREATE (u)-[:RATED {rating: 5}]->(m);
+
+MATCH (u:User {userId:1}), (m:Movie {movieId:2})
+CREATE (u)-[:RATED {rating: 4.5}]->(m);
+
+MATCH (u:User {userId:2}), (m:Movie {movieId:1})
+CREATE (u)-[:RATED {rating: 4}]->(m);
+
+MATCH (u:User {userId:2}), (m:Movie {movieId:3})
+CREATE (u)-[:RATED {rating: 5}]->(m);
+
+MATCH (u:User {userId:3}), (m:Movie {movieId:2})
+CREATE (u)-[:RATED {rating: 4}]->(m);
+
+MATCH (u:User {userId:4}), (m:Movie {movieId:4})
+CREATE (u)-[:RATED {rating: 5}]->(m);
+
+
+MATCH (p:Person {name:"Leonardo DiCaprio"}), (m:Movie {title:"Inception"})
+CREATE (p)-[:ACTED_IN]->(m);
+
+MATCH (p:Person {name:"Matthew McConaughey"}), (m:Movie {title:"Interstellar"})
+CREATE (p)-[:ACTED_IN]->(m);
+
+MATCH (p:Person {name:"Keanu Reeves"}), (m:Movie {title:"The Matrix"})
+CREATE (p)-[:ACTED_IN]->(m);
+
+// Christopher Nolan a regizat Inception
+MATCH (p:Person {personId: 10}), (m:Movie {movieId: 1})
+CREATE (p)-[:DIRECTED]->(m);
+
+// Christopher Nolan a regizat Interstellar
+MATCH (p:Person {personId: 10}), (m:Movie {movieId: 2})
+CREATE (p)-[:DIRECTED]->(m);
+
+

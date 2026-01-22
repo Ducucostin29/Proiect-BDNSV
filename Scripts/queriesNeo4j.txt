@@ -1,0 +1,78 @@
+A) Graph traversal (traversare în graf)
+1) Friends-of-friends (prietenii prietenilor, fără prieteni direcți)
+MATCH (u:User {userId: 1})-[:FRIEND]->(:User)-[:FRIEND]->(fof:User)
+WHERE u <> fof AND NOT (u)-[:FRIEND]->(fof)
+RETURN DISTINCT fof.userId AS id, fof.name AS name
+LIMIT 20;
+
+
+Ce demonstrează: traversare pe 2 hop-uri + filtrare.
+
+2) Shortest path între doi utilizatori (distanță socială)
+MATCH (a:User {userId: 1}), (b:User {userId: 5})
+MATCH p = shortestPath((a)-[:FRIEND*..10]->(b))
+RETURN p, length(p) AS hops;
+
+
+Ce demonstrează: algoritm de graf (drum minim).
+
+3) Recomandări la distanță 2: filme apreciate de “friends-of-friends”
+MATCH (u:User {userId: 1})-[:FRIEND]->(:User)-[:FRIEND]->(x:User)-[r:RATED]->(m:Movie)
+WHERE r.rating >= 4 AND NOT (u)-[:RATED]->(m) AND u <> x
+RETURN m.title, m.year, avg(r.rating) AS score, count(*) AS votes
+ORDER BY score DESC, votes DESC
+LIMIT 10;
+
+
+Ce demonstrează: traversare multi-hop + recomandare.
+
+B) Pattern matching (potriviri de tipare)
+4) Utilizatori cu interese similare: “overlap” pe genuri preferate
+
+Asta e foarte bună pentru raport fiindcă e clar pattern matching pe (User→Movie→Genre).
+
+// genurile pe care userul 1 le-a consumat (prin filmele pe care le-a evaluat)
+MATCH (u:User {userId: 1})-[:RATED]->(:Movie)-[:IN_GENRE]->(g:Genre)
+WITH u, collect(DISTINCT g) AS myGenres
+
+// comparăm cu alți utilizatori
+MATCH (v:User)-[:RATED]->(:Movie)-[:IN_GENRE]->(g2:Genre)
+WHERE v <> u AND g2 IN myGenres
+RETURN v.userId AS id, v.name AS name, count(DISTINCT g2) AS commonGenres
+ORDER BY commonGenres DESC
+LIMIT 10;
+
+
+Ce demonstrează: pattern matching + “similarity” simplu (număr de genuri comune).
+
+5) Similaritate mai “corectă”: utilizatori similari după filme comune (cu scor)
+MATCH (u:User {userId: 1})-[:RATED]->(m:Movie)
+WITH u, collect(DISTINCT m) AS myMovies
+
+MATCH (v:User)-[:RATED]->(m2:Movie)
+WHERE v <> u AND m2 IN myMovies
+WITH v, count(DISTINCT m2) AS common
+RETURN v.userId AS id, v.name AS name, common
+ORDER BY common DESC
+LIMIT 10;
+
+
+Ce demonstrează: pattern matching pe co-consum (foarte folosit în recommenders).
+
+
+6)“Co-watched pattern” pentru recomandări: filme văzute de utilizatori similari, dar nevăzute de tine
+
+(asta îți dă recomandări bazate pe “neighbors”)
+MATCH (u:User {userId: 1})-[:RATED]->(m:Movie)
+MATCH (v:User)-[:RATED]->(m)
+WHERE v <> u
+WITH u, v, count(DISTINCT m) AS commonCount
+WHERE commonCount >= 1
+
+MATCH (v)-[r:RATED]->(rec:Movie)
+WHERE r.rating >= 4 AND NOT (u)-[:RATED]->(rec)
+RETURN rec.title, rec.year, avg(r.rating) AS score, count(*) AS votes
+ORDER BY score DESC, votes DESC
+LIMIT 10;
+
+7)
