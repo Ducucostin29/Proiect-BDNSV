@@ -35,7 +35,7 @@ The main objective is to evaluate **query expressiveness**, **readability**, and
   
 <img width="850" height="644" alt="sql_erd" src="https://github.com/user-attachments/assets/5e94e965-bc31-46fd-827f-a01ce7007032" />
 
-  The script used for creating the nodes, the relationships and the initial data can be found in the Scripts folder: createNeo4j.txt
+  The script used for creating the nodes, the relationships and the initial data can be found in the Scripts folder: [create.sql](Scripts/create.sql)
 
   ---
 
@@ -73,6 +73,6 @@ The following queries were implemented in both databases:
 6. Collaborative filtering recommendations
 7. Co-actors detection
 
-  The SQL queries can be found in [queries.sql](scripts/mysql_queries.sql).  
-  The Neo4j queries can be found in [queriesNeo4.txt](scrtips/queriesNeo4.txt).
+  The SQL queries can be found in [queries.sql](Scripts/mysql_queries.sql).  
+  The Neo4j queries can be found in [queriesNeo4.txt](Scripts/queriesNeo4j.txt).
 
